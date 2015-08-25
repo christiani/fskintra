@@ -38,7 +38,8 @@ def docFindDocuments(bs, foldername='Dokumentarkiv'):
 
         # find url
         url = links[0]['href']
-        if 'visDokument' in url:
+        config.log(u'Kigger på dokument url: %s' % url, 3)
+        if 'visdokument' in url.lower():
             url = URL_DOC + re.search('.*?(\d+)', links[0]['href']).group(1)
         else:
             assert('Dokliste' in url)
@@ -58,8 +59,7 @@ def docFindDocuments(bs, foldername='Dokumentarkiv'):
             subbs = surllib.skoleGetURL(suburl, True)
 
             subdate = datetime.date(*reversed(map(int, date.split('-'))))
-            if subbs.cachedate <= subdate or \
-               (datetime.date.today() - subbs.cachedate).days > 2:
+            if subbs.cachedate <= subdate or subbs.cacheage >= 1.9:
                 # cached version is too old - refetch
                 subbs = surllib.skoleGetURL(suburl, True, True)
                 config.log(u'Kigger på folderen %s' % title)
